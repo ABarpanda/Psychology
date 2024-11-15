@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-import url_generator  
+import url_generator
+import indivisual_scraper
 
 # Define the date variable as needed (format it based on your requirements)
 date = "2014-11-15"
@@ -61,4 +62,6 @@ matching_strings = [s for s in strings if re.search(rf'\b{word}\b', s)]
 
 for headline in matching_strings:
     print("Link Text:", headline)
-    print("Link URL:", link_dict[headline])
+    print("Headline:", link_dict[headline])
+    indivisual_scraper.Main(link_dict[headline])
+    print()
