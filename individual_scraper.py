@@ -36,5 +36,5 @@ class Main:
 
 # Main execution
 if __name__ == "__main__":
-    url = "http://timesofindia.indiatimes.com//business/india-business/modi-pledges-end-to-posco-hurdles/articleshow/45155825.cms"
+    url = ""
     Main(url)
