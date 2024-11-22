@@ -24,5 +24,6 @@ class Main:
         return self.url
 
 if __name__ == "__main__":
-    main_instance = Main("1900-01-01")
+    main_instance = Main("2024-06-13")
     generated_url = main_instance.get_url()
+    Main("2024-06-13").test_Main()

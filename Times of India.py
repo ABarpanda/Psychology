@@ -4,11 +4,11 @@ import re
 import url_generator
 import individual_scraper
 
-target_date = "2014-11-15"
+target_date = "2024-11-15"
 target_word = "Modi"
 
 url = url_generator.Main(target_date).get_url()
-# print("Generated URL:", url)
+print("Generated URL:", url)
 
 link_dict = {}
 
@@ -29,7 +29,10 @@ def pre_processing(session, url):
                 for a in a_tags:
                     # print("Link Text:", a.text)
                     # print("Link URL:", a.get('href'))
-                    link_dict[a.text] = a.get('href')
+                    if a.get('href')[:4]!="http":
+                        link_dict[a.text] = "https://timesofindia.indiatimes.com/" + a.get('href')
+                    else:
+                        link_dict[a.text] = a.get('href')
         else:
             print("Failed to retrieve the page. Status code:", response.status_code)
     except:
@@ -43,6 +46,7 @@ pre_processing(s, url)
 # print(link_dict.keys())
 
 strings = link_dict.keys()
+# print(link_dict)
 
 matching_strings = [s for s in strings if re.search(rf'\b{target_word}\b', s)]
 print(f"{len(matching_strings)} article(s) found")
