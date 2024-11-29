@@ -1,10 +1,16 @@
 from datetime import date
 
+'''
+#! This file creates the link to the archive pages !!
+'''
+
 class Main:
-    def __init__(self,req_date:str):
+    def __init__(self,req_date):
         self.date_zero = date.fromisoformat('1900-01-01')
-        
-        self.target_date = date.fromisoformat(req_date)
+        if type(req_date)==str:
+            self.target_date = date.fromisoformat(req_date)
+        elif type(req_date)==date:
+            self.target_date = req_date
         self.target_year = self.target_date.year
         self.target_month = self.target_date.month
         self.target_day = self.target_date.day
@@ -26,4 +32,5 @@ class Main:
 if __name__ == "__main__":
     main_instance = Main("2024-06-13")
     generated_url = main_instance.get_url()
-    Main("2024-06-13").test_Main()
+    main_instance.test_Main()
+    print(generated_url)

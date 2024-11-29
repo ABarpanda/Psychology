@@ -1,51 +1,27 @@
-import requests
+import json
 from bs4 import BeautifulSoup
-from datetime import date
+from datetime import datetime, date, timedelta
 import re
 import url_generator
 import individual_scraper
+import Times_of_India as toi
 
-target_date = "2013-01-01"
+epoch = date(1900, 1, 1)
+start_date = date.fromisoformat("2013-01-01")
+end_date = date.fromisoformat("2013-01-31")
+"""
+end_date > start_date
+"""
 
-url = url_generator.Main(target_date).get_url()
-print("Generated URL:", url)
+target_word = "Modi"
 
+date_links = {}
+start_date_int = (start_date - epoch).days
+end_date_int = (end_date - epoch).days
 
-# Define the data structures
-link_dict = {}
+print(toi.Main(start_date,target_word).search_articles())
 
-# Start a session
-s = requests.Session()
+for day in range(start_date_int,end_date_int+1,5):
+    date_links[(epoch + timedelta(days=day)).strftime("%d-%m-%Y")] = toi.Main(epoch + timedelta(days=day),target_word).search_articles()
 
-def pre_processing(session, url):
-    # Send a GET request to the URL
-    try:
-        response = session.get(url)
-        # response = s.get(url)
-        
-        # Check if request is successful
-        if response.status_code == 200:
-        # Parse the HTML content
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # Find elements with class 'rightColWrap'
-            right_col_wrap_elements = soup.find_all(class_='rightColWrap')
-            
-            # Print each element found (or access specific content within it)
-            for element in right_col_wrap_elements:
-                # Find all <a> tags within the current 'rightColWrap' element
-                a_tags = element.find_all('a')
-                
-                # Print each <a> tag and its href attribute (if it exists)
-                for a in a_tags:
-                    # print("Link Text:", a.text)
-                    # print("Link URL:", a.get('href'))
-                    link_dict[a.text] = a.get('href')
-        else:
-            print("Failed to retrieve the page. Status code:", response.status_code)
-    except:
-        print("Failed to retrieve the page. Please check your internet connection")
-        print("No internet \n   Try: \n       Checking the network cables, modem, and router\n       Reconnecting to Wi-Fi\n       Running Windows Network Diagnostics")
-
-# Call the function
-pre_processing(s, url)
+print(json.dumps(date_links,indent=4))
