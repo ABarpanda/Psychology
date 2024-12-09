@@ -4,15 +4,15 @@ import re
 import url_generator
 import individual_scraper
 from datetime import datetime, date, timedelta
+from typing import List
 
 #todo: Try to ensure that "article(s) found containing the word" is not printed in link_matrix
-#todo: Make date and word the attributes of Main??
 
 class Main:
-    def __init__(self, target_date:date, target_word:str):
+    def __init__(self, target_date:date, target_words:List[str]):
         self.s = requests.Session()
         self.target_date = target_date
-        self.target_word = target_word
+        self.target_words = target_words
 
         url = url_generator.Main(target_date).get_url()
         self.url = url
@@ -46,9 +46,9 @@ class Main:
     def search_articles(self):
         Main.pre_processing(self)
         strings = self.link_dict.keys()
-        matching_strings = [s for s in strings if re.search(rf'\b{self.target_word}\b', s, re.IGNORECASE)]
+        matching_strings = [s for s in strings if all(re.search(rf'\b{word}\b', s, re.IGNORECASE) for word in self.target_words)]
 
-        print(f"{len(matching_strings)} article(s) found containing the word '{self.target_word}'.\n")
+        print(f"{len(matching_strings)} article(s) found on {self.target_date}.\n")
 
         links = []
         for headline in matching_strings:
@@ -60,9 +60,9 @@ class Main:
         return links
 
 if __name__ == "__main__":
-    target_date = "2013-01-21"
-    target_word = "Modi"
+    target_date = "2015-06-21"
+    target_words = ["PM Modi", "education"]
 
-    main = Main(target_date,target_word)
+    main = Main(target_date,target_words)
     main.pre_processing()
     article_links = main.search_articles()
